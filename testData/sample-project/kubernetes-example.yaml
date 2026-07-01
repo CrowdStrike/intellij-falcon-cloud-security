@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: insecure-pod
+spec:
+  containers:
+  - name: app
+    image: nginx:latest  # Should trigger security findings (invalid tag, missing digest)
+    # Security issues below
+    securityContext:
+      privileged: true        # Should trigger security warning
+      runAsNonRoot: false     # Should trigger security warning
+    ports:
+    - containerPort: 80
+    env:
+    - name: DATABASE_PASSWORD
+      value: "hardcoded-password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insecure-service
+spec:
+  type: LoadBalancer  # Should trigger security warning (external load balancer)
+  ports:
+  - port: 22
+    targetPort: 22
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: insecure-pod
