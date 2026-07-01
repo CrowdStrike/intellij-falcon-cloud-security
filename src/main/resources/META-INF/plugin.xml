@@ -1,0 +1,74 @@
+<!-- Plugin Configuration File: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN, cannot be changed between the plugin versions. -->
+    <id>com.crowdstrike.fcs-cli-plugin</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
+    <name>CrowdStrike FCS CLI</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor url="https://www.crowdstrike.com">CrowdStrike</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
+    <description><![CDATA[
+        IntelliJ plugin for FCS CLI integration, providing Infrastructure as Code (IaC) security scanning capabilities.<br>
+        <em>Scan Terraform, CloudFormation, Kubernetes, and other IaC files directly from your IDE</em>
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <idea-version since-build="221.0"/>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends optional="true">com.intellij.java</depends>
+    <depends optional="true">org.jetbrains.kotlin</depends>
+    <depends optional="true">com.intellij.modules.json</depends>
+    <depends optional="true">org.jetbrains.plugins.yaml</depends>
+    <depends optional="true">com.intellij.modules.xml</depends>
+    <depends optional="true">org.intellij.plugins.hcl</depends>
+    
+    <resource-bundle>messages.MyMessageBundle</resource-bundle>
+    
+    <!-- Extensions defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="CrowdStrike FCS CLI" 
+                    factoryClass="com.crowdstrike.fcscliplugin.FCSToolWindowFactory"
+                    anchor="right"
+                    secondary="false"
+                    icon="/icons/pluginIcon.svg"/>
+        <projectService serviceImplementation="com.crowdstrike.fcscliplugin.services.FCSBinaryService"/>
+        <projectService serviceImplementation="com.crowdstrike.fcscliplugin.services.FCSConfigurationService"/>
+        <projectService serviceImplementation="com.crowdstrike.fcscliplugin.services.FCSResultsService"/>
+        <projectService serviceImplementation="com.crowdstrike.fcscliplugin.services.FCSFileScanTriggerService"/>
+        
+        <!-- Custom file types for guaranteed .tf file recognition -->
+        <fileType name="FCS_Terraform" 
+                  implementationClass="com.crowdstrike.fcscliplugin.filetypes.FCSTerraformFileType" 
+                  fieldName="INSTANCE" 
+                  language="FCS_Terraform" 
+                  extensions="tf;tfvars;tfstate"/>
+        
+        <!-- External Annotator for IaC files -->
+        <externalAnnotator language="JSON" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="yaml" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="XML" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="TEXT" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="Dockerfile" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="Properties" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="HCL" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <externalAnnotator language="any" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        <!-- Custom language registration for .tf files without HCL plugin dependency -->
+        <externalAnnotator language="FCS_Terraform" implementationClass="com.crowdstrike.fcscliplugin.annotators.FCSExternalAnnotator"/>
+        
+        
+        <!-- Global Inspection for Problems view integration -->
+        <globalInspection implementationClass="com.crowdstrike.fcscliplugin.inspections.FCSInspection" 
+                          shortName="FCSIaCIssues"/>
+                          
+        <!-- Startup Activity to initialize file scan trigger service -->
+        <projectActivity implementation="com.crowdstrike.fcscliplugin.services.FCSFileScanTriggerStartupActivity"/>
+    </extensions>
+</idea-plugin>
