@@ -13,8 +13,59 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
     <description><![CDATA[
-        IntelliJ plugin for FCS CLI integration, providing Infrastructure as Code (IaC) security scanning capabilities.<br>
-        <em>Scan Terraform, CloudFormation, Kubernetes, and other IaC files directly from your IDE</em>
+        <p>An IntelliJ IDEA plugin that integrates CrowdStrike's Falcon Cloud Security (FCS) CLI to provide
+        Infrastructure as Code (IaC) security scanning capabilities directly within your IDE.</p>
+
+        <h2>Features</h2>
+
+        <h3>Real-time IaC Security Scanning</h3>
+        <ul>
+            <li>Scan Terraform, CloudFormation, Kubernetes, and other IaC files</li>
+            <li>Support for multiple file formats: JSON, YAML, XML, Dockerfile, HCL, Bicep, Properties</li>
+            <li>Inline security annotations and highlighting</li>
+            <li>Integration with IntelliJ's Problems view</li>
+        </ul>
+
+        <h3>IDE Integration</h3>
+        <ul>
+            <li>Dedicated tool window for FCS CLI management</li>
+            <li>Configurable scan settings and severity filtering</li>
+            <li>Auto-scan on file save (optional)</li>
+        </ul>
+
+        <h3>Binary Management</h3>
+        <ul>
+            <li>Manage FCS CLI binary download, installation, and updates</li>
+        </ul>
+
+        <h3>Customizable Scanning</h3>
+        <ul>
+            <li>Configurable target paths</li>
+            <li>Severity level filtering (Critical, High, Medium, Low, Info)</li>
+            <li>Option to exclude secrets scanning</li>
+        </ul>
+
+        <h2>Requirements</h2>
+        <ul>
+            <li>IntelliJ IDEA 2025.2 or later</li>
+            <li>CrowdStrike Falcon API credentials with <em>Cloud Security Tools Download</em> (Read) and
+            <em>Infrastructure as Code</em> (Read &amp; Write) scopes</li>
+        </ul>
+
+        <h2>Getting Started</h2>
+        <ol>
+            <li>Open the <strong>CrowdStrike FCS CLI</strong> tool window via
+            <em>View → Tool Windows → CrowdStrike FCS CLI</em></li>
+            <li>Click <strong>Download FCS CLI</strong> to install the binary (API credentials required)</li>
+            <li>Configure your scan settings and enable the plugin</li>
+            <li>Open any supported IaC file — security issues appear as inline annotations and in the Problems view</li>
+        </ol>
+
+        <h2>Configuration</h2>
+        <p>Credentials can be provided via environment variables (<code>FALCON_CLIENT_ID</code>,
+        <code>FALCON_CLIENT_SECRET</code>, <code>FALCON_CLOUD</code>) or entered in the plugin dialog.
+        Additional settings include target path, severity filters, platform restrictions, secrets exclusion,
+        auto-scan on save, and scan timeout.</p>
     ]]></description>
 
     <!-- Product and plugin compatibility requirements.
