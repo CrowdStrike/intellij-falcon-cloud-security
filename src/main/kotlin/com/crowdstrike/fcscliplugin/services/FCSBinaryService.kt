@@ -15,7 +15,7 @@ class FCSBinaryService(private val project: Project) {
     companion object {
         private val LOG = logger<FCSBinaryService>()
         const val MINIMUM_CLI_VERSION = "3.0.0"
-        const val MAXIMUM_CLI_VERSION = "3.2.0"
+        const val MAXIMUM_CLI_VERSION = "4.1.2"
     }
 
     private var cachedBinaryPath: String? = null

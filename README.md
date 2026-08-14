@@ -136,8 +136,6 @@ src/
 │       └── scripts/fcs_download.sh          # Binary download script
 ├── test/
 │   └── kotlin/com/crowdstrike/fcscliplugin/ # Unit test suite
-testData/
-└── sample-project/                          # IaC fixtures used by tests and runIde
 ```
 
 ### Building the Plugin

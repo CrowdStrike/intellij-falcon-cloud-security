@@ -61,7 +61,7 @@ class FCSVersionMigrationTest : BasePlatformTestCase() {
     }
 
     fun `test major release above maximum is incompatible`() {
-        assertFalse(binaryService.isVersionCompatible("4.0.0"))
+        assertFalse(binaryService.isVersionCompatible("999.0.0"))
     }
 
     fun `test version just below minimum is incompatible`() {

@@ -219,8 +219,7 @@ class FCSBinaryServiceTest : BasePlatformTestCase() {
     }
 
     fun `test isVersionCompatible returns false for version above maximum`() {
-        assertFalse(service.isVersionCompatible("3.3.0"))
-        assertFalse(service.isVersionCompatible("4.0.0"))
+        assertFalse(service.isVersionCompatible("999.0.0"))
     }
 
     fun `test isVersionCompatible returns false for version below minimum`() {
@@ -240,8 +239,7 @@ class FCSBinaryServiceTest : BasePlatformTestCase() {
     }
 
     fun `test isVersionAboveMaximum returns true for version above maximum`() {
-        assertTrue(service.isVersionAboveMaximum("3.3.0"))
-        assertTrue(service.isVersionAboveMaximum("4.0.0"))
+        assertTrue(service.isVersionAboveMaximum("999.0.0"))
     }
 
     fun `test isVersionAboveMaximum returns false for version at or below maximum`() {
