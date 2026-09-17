@@ -287,28 +287,36 @@ class FCSResultsService(private val project: Project) {
     private fun normalizeFilePath(rawFilePath: String): String {
         try {
             val path = Paths.get(rawFilePath)
-            
-            // If it's already absolute, return as-is
+
+            // If it's already absolute, return normalized with consistent drive letter case
             if (path.isAbsolute) {
-                return path.normalize().toString()
+                val str = path.normalize().toString().replace("\\", "/")
+                return normalizeDriveCase(str)
             }
-            
+
+            // Windows-style paths (e.g. c:/Users/...) are not recognized as absolute on Linux/Mac.
+            // Detect them by the drive letter pattern and normalize directly.
+            val forwardSlash = rawFilePath.replace("\\", "/")
+            if (forwardSlash.matches(Regex("^[a-zA-Z]:.*"))) {
+                return normalizeDriveCase(forwardSlash)
+            }
+
             // Handle relative paths with ../ components
             val normalizedPath = path.normalize()
             var pathStr = normalizedPath.toString().replace("\\", "/")
-            
+
             // Remove any remaining ../ components from the beginning
             while (pathStr.startsWith("../")) {
                 pathStr = pathStr.substring(3)
             }
-            
+
             // If the path is empty after normalization, just use the filename
             if (pathStr.isEmpty()) {
                 return path.fileName?.toString() ?: rawFilePath
             }
-            
+
             return pathStr
-            
+
         } catch (e: Exception) {
             // Fallback: just return the filename
             return Paths.get(rawFilePath).fileName?.toString() ?: rawFilePath
@@ -340,15 +348,19 @@ class FCSResultsService(private val project: Project) {
         return matchingResults
     }
     
+    private fun normalizeDriveCase(path: String): String =
+        path.replace(Regex("^([a-zA-Z]):")) { it.value.uppercase() }
+
     /**
      * Check if two file paths match using multiple strategies
      */
     private fun isPathMatch(targetPath: String, resultPath: String): Boolean {
         if (targetPath.isEmpty() || resultPath.isEmpty()) return false
         try {
-            // Clean paths
-            val targetCleaned = targetPath.replace("\\", "/")
-            val resultCleaned = resultPath.replace("\\", "/")
+            // Clean paths and normalize Windows drive letter case (c:/ → C:/) so CLI-reported
+            // lowercase drive letters match IDE paths which always use uppercase.
+            val targetCleaned = normalizeDriveCase(targetPath.replace("\\", "/"))
+            val resultCleaned = normalizeDriveCase(resultPath.replace("\\", "/"))
             
             // Strategy 1: Exact match
             if (targetCleaned == resultCleaned) {

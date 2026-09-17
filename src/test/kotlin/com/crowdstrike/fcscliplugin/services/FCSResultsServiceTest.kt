@@ -233,6 +233,16 @@ class FCSResultsServiceTest : BasePlatformTestCase() {
         assertEquals("src/main.tf", result)
     }
 
+    fun `test normalizeFilePath uppercases Windows drive letter`() {
+        assertEquals("C:/Users/brandon/project/main.tf", normalizeFilePath("c:/Users/brandon/project/main.tf"))
+        assertEquals("C:/Users/brandon/project/main.tf", normalizeFilePath("C:/Users/brandon/project/main.tf"))
+        assertEquals("D:/work/file.tf", normalizeFilePath("d:/work/file.tf"))
+    }
+
+    fun `test normalizeFilePath converts backslashes to forward slashes`() {
+        assertEquals("C:/Users/brandon/project/main.tf", normalizeFilePath("C:\\Users\\brandon\\project\\main.tf"))
+    }
+
     // =========================================================================
     // 3. isPathMatch (private — accessed via reflection)
     // =========================================================================
@@ -282,6 +292,10 @@ class FCSResultsServiceTest : BasePlatformTestCase() {
 
     fun `test isPathMatch workspace root does match file inside it`() {
         assertTrue(isPathMatch("/workspace/src/main.tf", "workspace/src/main.tf"))
+    }
+
+    fun `test isPathMatch Windows backslash CLI path matches forward slash IDE path`() {
+        assertTrue(isPathMatch("C:/Users/brandon/project/network.tf", "C:\\Users\\brandon\\project\\network.tf"))
     }
 
     // =========================================================================
